@@ -1,0 +1,3 @@
+#scp -r -p ~/Documents/workspace/christophedebatz-api/* root@212.47.248.197:/home/christophedebatz-api/*
+scp -r -p ~/Documents/workspace/christophedebatz-api/assets root@212.47.248.197:/home/christophedebatz-api/assets # just assets
+scp -r -p ~/Documents/workspace/christophedebatz-api/index.html root@212.47.248.197:/home/christophedebatz-api/index.html # just index
