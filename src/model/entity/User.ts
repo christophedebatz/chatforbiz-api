@@ -6,7 +6,10 @@ export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "first_name" })
+  @Column({ name: "token" })
+  token: string;
+
+  @Column({ name: "nickname" })
   nickname: string;
 
   @Column({ name: "picture_url" })
