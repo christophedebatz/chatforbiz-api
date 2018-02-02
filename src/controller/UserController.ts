@@ -13,20 +13,20 @@ export default class UserController {
     this.createUser = this.createUser.bind(this);
   }
 
-    /*
+  /*
    * Create a new user.
    *
    * @param req  the request.
    * @param res  the response.
-   * @param next the next filter.
+   * @param nexàt the next filter.
    * @returns the created user.
    */
   public createUser(req: Request, res: Response, next: Next):void {
     logger.info('[UserController] Creating new user.');
 
     const user:User = new User();
-    if (req.body && req.body.nickname) { // mapping directly because not enough time
-      user.nickname = req.body.nickname;
+    if (req.body && req.body.name) { // mapping directly because not enough time
+      user.name = req.body.name;
     }
 
     this.service.createUser(user)

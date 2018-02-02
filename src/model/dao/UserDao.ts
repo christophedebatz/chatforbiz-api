@@ -17,11 +17,11 @@ export const UserDao = {
   /**
    * Returns a user by its nickname.
    */
-  getByNickName(nickname:string):Promise<User> {
+  getByName(nickname:string):Promise<User> {
     return Database.getInstance()
     .then(async connection => {
       const userRepository = connection.getRepository(User);
-      return await userRepository.findOne({ nickname });
+      return await userRepository.findOne({ name });
     });
   },
 

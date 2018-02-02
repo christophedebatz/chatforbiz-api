@@ -9,8 +9,11 @@ export default class User {
   @Column({ name: "token" })
   token: string;
 
-  @Column({ name: "nickname" })
-  nickname: string;
+  @Column({ name: "expiration_date" })
+  expirationDate: Date;
+
+  @Column({ name: "name" })
+  name: string;
 
   @Column({ name: "picture_url" })
   pictureUrl: string;
