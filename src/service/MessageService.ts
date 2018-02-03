@@ -1,7 +1,10 @@
+import Message from '../model/entity/Message';
+import { MessageDao } from '../model/dao/MessageDao';
+
 export default class MessageService {
 
-  constructor() {
-    // still empty yet dude
+  post(message:Message):Promise<Message> {
+    return MessageDao.saveMessage(message);
   }
 
 }

@@ -17,7 +17,7 @@ export const UserDao = {
   /**
    * Returns a user by its nickname.
    */
-  getByName(nickname:string):Promise<User> {
+  getByName(name:string):Promise<User> {
     return Database.getInstance()
     .then(async connection => {
       const userRepository = connection.getRepository(User);
@@ -28,7 +28,7 @@ export const UserDao = {
   /**
    * Saves and returns a new user.
    */
-  createUser(user:User):Promise<User> {
+  saveUser(user:User):Promise<User> {
     return Database.getInstance()
       .then(async connection => {
         const userRepository = connection.getRepository(User);

@@ -6,7 +6,7 @@ let env = process.env.NODE_ENV || 'development';
 let config: Config = {
   name: 'chatforbiz',
   version: '1.0.0',
-  port: 3000,
+  port: 3001,
   env: env === 'production' ? 'prod' : 'dev',
   database: {
     host: 'localhost',

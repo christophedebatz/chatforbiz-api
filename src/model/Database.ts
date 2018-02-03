@@ -14,7 +14,7 @@ export const Database = {
         username: config.database.username,
         password: config.database.password,
         database: config.database.database,
-        entities: [  __dirname + '/../entity/*.js' ],
+        entities: [  __dirname + '/entity/*.js' ],
         synchronize: true
       }).catch(err => {
         throw new Error('Database error:' + err);

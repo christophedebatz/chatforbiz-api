@@ -18,8 +18,8 @@ export default class User {
   @Column({ name: "picture_url" })
   pictureUrl: string;
 
-  @Column()
-  role: string;
+  @Column({ name: "role" })
+  role: string = UserRole.USER;
 
   @CreateDateColumn({ name: "creation_date" })
   creationDate: Date;

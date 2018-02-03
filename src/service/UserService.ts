@@ -8,6 +8,8 @@ import ServiceException, { ServiceErrorCodes } from './exception/ServiceExceptio
 
 export default class UserService {
 
+  private static TTL_ADDITION_VALUE = 15;
+
   /*
    * Create a new user with constistancy checks before.
    *
@@ -21,10 +23,20 @@ export default class UserService {
           if (dbUser) {
             throw new ServiceException(ServiceErrorCodes.USER_CREATION_DUPLICATE);
           }
-          user.token = uuid().replace('-', ''); // inject the user token before saving it
-          user.expirationDate = moment().add(15, 'm').toDate(); // user is disconnected after 15 mn of inactivity
-          return UserDao.createUser(user);
+          user.token = uuid().replace(/-/g, ''); // inject the user token before saving it
+          user.expirationDate = moment().add(UserService.TTL_ADDITION_VALUE, 'm').toDate(); // user is disconnected after 15 mn of inactivity
+          return UserDao.saveUser(user);
         });
+    }
+    return Promise.reject(
+      new ServiceException(ServiceErrorCodes.EMPTY_INPUT)
+    );
+  }
+
+  public prolongateTokenExpiration(user:User) {
+    if (user) {
+      user.expirationDate = moment().add(UserService.TTL_ADDITION_VALUE, 'm').toDate();
+      return UserDao.saveUser(user);
     }
     return Promise.reject(
       new ServiceException(ServiceErrorCodes.EMPTY_INPUT)
