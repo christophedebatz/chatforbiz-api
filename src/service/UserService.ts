@@ -1,6 +1,6 @@
 import * as restify from 'restify';
 import { v4 as uuid } from 'uuid';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { logger } from '../service/logger';
 import { UserDao } from '../model/dao/UserDao';
 import User from '../model/entity/User';
@@ -33,6 +33,49 @@ export default class UserService {
     );
   }
 
+  public removeUser(user:User):void {
+    return UserDao.remove(user.id);
+  }
+
+  /*
+   * Returns user if and only if the given token is associated to a user.
+   *
+   * @param user the user token.
+   * @returns the associated user.
+   */
+  public authenticateUser(token:string):Promise<User> {
+    if (token) {
+      return UserDao.getByToken(token)
+        .then(user => {
+          const isExpired:boolean = moment(user.expirationDate).isBefore(moment());
+          if (isExpired) {
+            return Promise.reject(
+              new ServiceException(ServiceErrorCodes.UNAUTHORIZED)
+            );
+          }
+          return Promise.resolve(user);
+        });
+      }
+      return Promise.reject(
+        new ServiceException(ServiceErrorCodes.UNAUTHORIZED)
+      );
+  }
+
+  /*
+   * Removes and returns all the users that are inactives.
+   *
+   * @returns the inatives and removed users.
+   */
+  public removeInactiveUsers():Promise<User[]> {
+    return UserDao.removeByExpirationDateBefore(new Date());
+  }
+
+  /*
+   * Saves the user by refreshing its token validity.
+   *
+   * @param user the user to store.
+   * @returns the saved user.
+   */
   public prolongateTokenExpiration(user:User) {
     if (user) {
       user.expirationDate = moment().add(UserService.TTL_ADDITION_VALUE, 'm').toDate();
@@ -42,5 +85,4 @@ export default class UserService {
       new ServiceException(ServiceErrorCodes.EMPTY_INPUT)
     );
   }
-
 }

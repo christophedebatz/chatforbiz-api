@@ -1,22 +1,34 @@
 import * as fs from 'fs';
 import 'reflect-metadata';
 import * as restify from 'restify';
+import * as Cors from 'restify-cors-middleware';
 import config from './config/config';
 import { logger } from './service/logger';
 import { Database } from './model/Database';
+import { inactiveUserCleaningJob } from './scheduler/inactiveUserCleaningJob';
 import UserAuthFilter from './filter/UserAuthFilter'
 
 export const api = restify.createServer({ name: config.name});
 
-let authFilter:UserAuthFilter = new UserAuthFilter();
 Database.getInstance(); // initialize database instance
+//inactiveUserCleaningJob.doSchedule(); // executes inactive users cron job
 
+// just for instance, theorically origins must be the IP/domain
+// of the front react server
+const cors = Cors({
+  origins: ['*'],
+  allowHeaders: ['*'],
+  exposeHeaders: ['*']
+});
+
+api.pre(cors.preflight);
+api.use(cors.actual);
 api.pre(restify.pre.sanitizePath());
 api.use(restify.plugins.acceptParser(api.acceptable));
 api.use(restify.plugins.bodyParser());
 api.use(restify.plugins.queryParser());
 api.use(restify.plugins.fullResponse());
-api.use(authFilter.authenticateUser);
+api.use((new UserAuthFilter()).authenticateUser);
 
 fs.readdirSync(__dirname + '/route').forEach((routeFile: string): void => {
   if (routeFile.substr(-3) === '.js') {

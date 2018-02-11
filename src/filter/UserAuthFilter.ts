@@ -1,9 +1,12 @@
 import { Request, Response, Next } from 'restify';
 import { logger } from '../service/logger';
+import UserService from '../service/UserService';
+import ApiException from '../controller/exception/ApiException';
 import User from '../model/entity/User';
 
 export default class UserAuthFilter {
 
+  private service:UserService = new UserService();
 
   constructor() {
     this.authenticateUser = this.authenticateUser.bind(this);
@@ -22,24 +25,12 @@ export default class UserAuthFilter {
     if (req.method.toLowerCase() === 'post' && req.path().includes('/users')) {
       return next();
     }
-    logger.info('[UserController] Authenticating user.');
-
-    let hasError = false;
-    const authorization = req.header('Authorization');
-    if (authorization) {
-      const split = authorization.split('-');
-      if (split.length === 2) {
-        // todo
-      } else {
-        hasError = true;
-      }
-    } else {
-      hasError = true;
-    }
-
-    if (hasError) {
-      // todo
-    }
+    logger.info('[UserAuthFilter] Authenticating user.');
+    this.service.authenticateUser(req.header('Authorization'))
+      .then((user:User) => {
+        res.set('me', JSON.stringify(user));
+        next();
+      })
+      .catch(err => res.json(err.status, new ApiException(err.message, err.cause)));
   }
-
 }

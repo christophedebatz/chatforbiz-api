@@ -21,19 +21,32 @@ export default class MessageController {
   }
 
   public onReceiveMessage(message:MessageDto):Promise<MessageDto> {
-    return this.messageService.post(message)
-      .then(message => {
-        return this.userService.prolongateTokenExpiration(message.user)
-          .then(user => {
-            message.user = user;
-            return new Message(message);
+    return this.userService.authenticateUser(message.user.token)
+      .then(user => {
+        return this.messageService.post(message)
+          .then(message => {
+            return this.userService.prolongateTokenExpiration(user)
+              .then(user => {
+                message.user = user;
+                return new MessageDto(message);
+              });
           });
+      })
+      .catch(err => {
+        console.log('Error while messaging...', message);
+        message.error = 'unauthorized';
+        return Promise.resolve(message);
       });
   }
 
   public onReceiveAction(action:ActionDto):Promise<ActionDto> {
+    // do some job if necessary (save event on database or something else...)
     return new Promise((resolve, reject) => {
-      return null;
+      if (!action.user.token) {
+        action.error = 'unauthorized';
+        return resolve(action);
+      }
+      return resolve(action);
     });
   }
 

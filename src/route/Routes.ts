@@ -11,8 +11,10 @@ module.exports.routes = {
     const userController:UserController = new UserController();
     const messageController:MessageController = new MessageController();
 
-    // handle public resources
+    // handle rest resources
     api.post('/users', userController.createUser);
+    api.get('/me', userController.fetchMe);
+    api.del('/me', userController.removeMe);
 
     // handle realtime resources
     const handlers:[{ key: string, do:(m: any) => Promise<any> }] = [
