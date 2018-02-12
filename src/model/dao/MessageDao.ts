@@ -1,3 +1,4 @@
+import { logger } from '../../service/logger';
 import { Database } from '../Database';
 import Message from '../entity/Message';
 
@@ -9,6 +10,7 @@ export const MessageDao = {
   saveMessage(message:Message):Promise<Message> {
     return Database.getInstance()
       .then(async connection => {
+        logger.info('Saving new message...');
         const messageRepository = connection.getRepository(Message);
         return await messageRepository.save(message);
       });
@@ -20,6 +22,7 @@ export const MessageDao = {
   getLastMessages(count:number):Promise<Message[]> {
     return Database.getInstance()
       .then(async connection => {
+        logger.info('Retrieving last ' + count + ' messages...')
         const messageRepository = connection.getRepository(Message);
         return await messageRepository.createQueryBuilder('message')
           .leftJoinAndSelect('message.user', 'user')

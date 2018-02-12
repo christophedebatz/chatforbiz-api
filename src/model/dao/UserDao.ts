@@ -1,4 +1,4 @@
-import { logger } from '../service/logger';
+import { logger } from '../../service/logger';
 import { Database } from '../Database';
 import User from '../entity/User';
 
