@@ -8,4 +8,16 @@ export default class MessageService {
     return MessageDao.saveMessage(message);
   }
 
+  fetchLastMessages(count:number):Promise<Message[]> {
+    return MessageDao.getLastMessages(count)
+      .then(messages => {
+        messages.forEach(message => {
+          if (message.user) {
+            message.user.token = undefined;
+          }
+        });
+        return messages;
+      });
+  }
+
 }

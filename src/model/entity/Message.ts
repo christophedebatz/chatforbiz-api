@@ -5,11 +5,13 @@ import User from './User';
 export default class Message {
 
   constructor(messageDto:Message) {
-    this.user = messageDto.user;
-    this.name = messageDto.name;
-    this.id = messageDto.id;
-    this.creationDate = messageDto.creationDate;
-    this.text = messageDto.text;
+    if (messageDto) {
+      this.user = messageDto.user;
+      this.name = messageDto.name;
+      this.id = messageDto.id;
+      this.creationDate = messageDto.creationDate;
+      this.text = messageDto.text;
+    }
   }
 
   isRemoved():boolean {
@@ -19,13 +21,13 @@ export default class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "text" })
+  @Column()
   text: string;
 
   @ManyToOne(type => User, { onDelete: 'SET NULL' })
   user: User;
 
-  @Column({ name: "text" })
+  @Column()
   name: string;
 
   @CreateDateColumn({ name: "creation_date" })

@@ -33,8 +33,13 @@ export default class UserService {
     );
   }
 
-  public removeUser(user:User):void {
-    return UserDao.remove(user.id);
+  /*
+   * Removes the given user from the database.
+   *
+   * @param user the user to remove.
+   */
+  public removeUser(user:User):Promise<void> {
+    return UserDao.remove(user);
   }
 
   /*
@@ -67,7 +72,7 @@ export default class UserService {
    * @returns the inatives and removed users.
    */
   public removeInactiveUsers():Promise<User[]> {
-    return UserDao.removeByExpirationDateBefore(new Date());
+    return UserDao.removeByExpirationDateBeforeNow();
   }
 
   /*

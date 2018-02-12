@@ -22,7 +22,7 @@ export default class UserController extends MeController {
    *
    * @param req  the request.
    * @param res  the response.
-   * @param nexàt the next filter.
+   * @param next the next filter.
    * @returns the created user.
    */
   public createUser(req: Request, res: Response, next: Next):void {
@@ -43,7 +43,7 @@ export default class UserController extends MeController {
      *
      * @param req  the request.
      * @param res  the response.
-     * @param nexàt the next filter.
+     * @param next the next filter.
      * @returns the fetched user.
      */
     public fetchMe(req: Request, res: Response, next:Next):void {
@@ -56,13 +56,14 @@ export default class UserController extends MeController {
      *
      * @param req  the request.
      * @param res  the response.
-     * @param nexàt the next filter.
+     * @param next the next filter.
      * @returns the fetched user.
      */
     public removeMe(req: Request, res: Response, next:Next):void {
       logger.info('[UserController] Removing myself');
       const user:User = super.tryGetMe(res);
-      this.service.removeUser(user);
-      res.json(204);
+      this.service.removeUser(user)
+        .then(() => res.json(204));
     }
+
 }

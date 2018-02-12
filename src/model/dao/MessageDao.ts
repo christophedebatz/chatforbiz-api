@@ -12,6 +12,25 @@ export const MessageDao = {
         const messageRepository = connection.getRepository(Message);
         return await messageRepository.save(message);
       });
+  },
+
+  /**
+   * Returns the given number of previous messages.
+   */
+  getLastMessages(count:number):Promise<Message[]> {
+    return Database.getInstance()
+      .then(async connection => {
+        const messageRepository = connection.getRepository(Message);
+        return await messageRepository.createQueryBuilder('message')
+          .leftJoinAndSelect('message.user', 'user')
+          .orderBy('message.id', 'ASC')
+          .limit(count)
+          .getMany();
+      })
+      .catch(err => {
+        console.log(err);
+        return [];
+      });
   }
 
 };

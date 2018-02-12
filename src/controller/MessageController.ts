@@ -18,6 +18,7 @@ export default class MessageController {
   constructor() {
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
     this.onReceiveAction = this.onReceiveAction.bind(this);
+    this.fetchLastMessages = this.fetchLastMessages.bind(this);
   }
 
   public onReceiveMessage(message:MessageDto):Promise<MessageDto> {
@@ -33,7 +34,7 @@ export default class MessageController {
           });
       })
       .catch(err => {
-        console.log('Error while messaging...', message);
+        logger.error('Error while messaging...', message);
         message.error = 'unauthorized';
         return Promise.resolve(message);
       });
@@ -48,6 +49,14 @@ export default class MessageController {
       }
       return resolve(action);
     });
+  }
+
+
+  public fetchLastMessages(req: Request, res: Response, next:Next):void {
+    logger.info('[MessageController] Fetching last messages');
+    this.messageService.fetchLastMessages(50)
+      .then(messages => res.json(200, messages))
+      .catch(logger.error);
   }
 
 }

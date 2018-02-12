@@ -11,13 +11,13 @@ import UserAuthFilter from './filter/UserAuthFilter'
 export const api = restify.createServer({ name: config.name});
 
 Database.getInstance(); // initialize database instance
-//inactiveUserCleaningJob.doSchedule(); // executes inactive users cron job
+inactiveUserCleaningJob.doSchedule(); // executes inactive users cron job
 
-// just for instance, theorically origins must be the IP/domain
+// obvioulsy just for demo, theorically origins must be the IP/domain
 // of the front react server
 const cors = Cors({
   origins: ['*'],
-  allowHeaders: ['*'],
+  allowHeaders: ['Authorization'],
   exposeHeaders: ['*']
 });
 

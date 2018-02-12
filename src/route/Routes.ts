@@ -15,6 +15,7 @@ module.exports.routes = {
     api.post('/users', userController.createUser);
     api.get('/me', userController.fetchMe);
     api.del('/me', userController.removeMe);
+    api.get('/messages', messageController.fetchLastMessages);
 
     // handle realtime resources
     const handlers:[{ key: string, do:(m: any) => Promise<any> }] = [

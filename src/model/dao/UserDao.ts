@@ -1,3 +1,4 @@
+import { logger } from '../service/logger';
 import { Database } from '../Database';
 import User from '../entity/User';
 
@@ -9,14 +10,19 @@ export const UserDao = {
   getById(id:number):Promise<User> {
     return Database.getInstance()
     .then(async connection => {
+      logger.info('Get user by id', id);
       const userRepository = connection.getRepository(User);
       return await userRepository.findOneById(id);
     });
   },
 
-  remove(user:User) {
+  /**
+   * Remove the given user.
+   */
+  remove(user:User):Promise<void> {
     return Database.getInstance()
     .then(async connection => {
+      logger.info('Remove user with id', user.id);
       const userRepository = connection.getRepository(User);
       return await userRepository.removeById(user.id);
     });
@@ -28,6 +34,7 @@ export const UserDao = {
   getByName(name:string):Promise<User> {
     return Database.getInstance()
     .then(async connection => {
+      logger.info('Get user by name', name);
       const userRepository = connection.getRepository(User);
       return await userRepository.findOne({ name });
     });
@@ -39,22 +46,23 @@ export const UserDao = {
   getByToken(token:string):Promise<User> {
     return Database.getInstance()
     .then(async connection => {
+      logger.info('Get user by token', token);
       const userRepository = connection.getRepository(User);
       return await userRepository.findOne({ token });
     });
   },
 
   /**
-   * Remove and returns the users that expire now.
+   * Remove and returns the users that have expired.
    */
-  removeByExpirationDateBefore(now:Date):Promise<User[]> {
+  removeByExpirationDateBeforeNow():Promise<User[]> {
     return Database.getInstance()
       .then(async connection => {
         return await connection.getRepository(User)
           .createQueryBuilder()
           .delete()
           .from(User)
-          .where('expirationDate <= :now', { now })
+          .where('expirationDate <= NOW()')
           .execute();
       });
   },
@@ -65,6 +73,7 @@ export const UserDao = {
   saveUser(user:User):Promise<User> {
     return Database.getInstance()
       .then(async connection => {
+        logger.info('Save new user');
         const userRepository = connection.getRepository(User);
         return await userRepository.save(user);
       });
