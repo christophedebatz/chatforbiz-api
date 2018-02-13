@@ -43,6 +43,7 @@ export default class MessageController {
   public onReceiveAction(action:ActionDto):Promise<ActionDto> {
     // do some job if necessary (save event on database or something else...)
     return new Promise((resolve, reject) => {
+      action.creationDate = new Date();
       if (!action.user.token) {
         action.error = 'unauthorized';
         return resolve(action);
