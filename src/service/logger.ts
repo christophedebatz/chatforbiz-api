@@ -10,7 +10,7 @@ infoStream.write = (info: any): boolean => {
 };
 
 export let logger = bunyan.createLogger({
-  name: 'smoggler',
+  name: 'chatforbiz',
   streams: [
     {
       level: 'info',
